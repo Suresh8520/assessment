@@ -1,0 +1,77 @@
+├── challenge-02
+│   ├── README.md
+│   ├── golang
+│   │   ├── Dockerfile
+│   │   ├── file-dev.txt
+│   │   ├── file-prod.txt
+│   │   ├── file.txt           # original file
+│   │   ├── server.go          # original file (unchanged)
+│   ├── docker-compose.yml     # Docker compose file
+
+
+
+Dockerfile
+
+# Use official Golang image for building the Go app
+FROM golang:1.19-alpine AS builder
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Go source code into the container
+COPY server.go .
+COPY file.txt .
+COPY file-dev.txt .
+COPY file-prod.txt .
+
+# Build the Go app
+RUN go build -o server server.go
+
+# Create a new image for runtime
+FROM alpine:latest
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the built executable and necessary files
+COPY --from=builder /app/server .
+COPY file-dev.txt .
+COPY file-prod.txt .
+
+# Expose the port that the app will run on
+EXPOSE 8080
+
+# Set the default environment (DEV)
+ENV ENVIRONMENT=DEV
+
+# Run the server
+CMD if [ "$ENVIRONMENT" = "PROD" ]; then \
+        cp file-prod.txt file.txt; \
+    else \
+        cp file-dev.txt file.txt; \
+    fi && ./server
+
+
+
+
+
+docker-compose.yml
+
+
+version: '3.8'
+
+services:
+  golang-server:
+    build: ./golang
+    ports:
+      - "8080:8080"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}   # Default environment can be overridden by ENVIRONMENT variable
+
+
+We will add basic logging into the Dockerfile's CMD step
+
+Build and Deploy Instructions 
+Building the Docker Container
+Build the Docker image for the Go server
+Running in DEV and PROD mode

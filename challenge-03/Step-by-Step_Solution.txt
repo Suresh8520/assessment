@@ -1,0 +1,57 @@
+Step 1: Directory Structure
+The directory structure will look like this:
+
+challenge-03/
+│   README.md
+│   updatejson.py
+└── configs/
+    ├── config.json
+    └── input.csv
+
+Step 2: Python Script (updatejson.py)
+Here's the Python script that implements the required functionality:
+
+import json
+import csv
+import argparse
+
+def update_json(env, json_file, csv_file):
+    # Load existing JSON data from the file
+    with open(json_file, 'r') as jf:
+        json_data = json.load(jf)
+
+    # Read CSV file and prepare data for the update
+    with open(csv_file, 'r') as cf:
+        csv_reader = csv.reader(cf)
+        csv_data = {rows[0]: rows[1] for rows in csv_reader}
+
+    # Update only the part of JSON that corresponds to the provided environment (e.g., DEV, STAGE, PROD)
+    if env in json_data:
+        for key, value in csv_data.items():
+            json_data[env][key] = value
+    else:
+        print(f"Environment {env} not found in the JSON file.")
+
+    # Write the updated JSON back to the file
+    with open(json_file, 'w') as jf:
+        json.dump(json_data, jf, indent=4)
+    
+    print(f"JSON file updated for the {env} environment.")
+
+if __name__ == "__main__":
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Update JSON file with CSV data based on the environment.")
+    parser.add_argument('--env', required=True, help='The environment to update (e.g., DEV, STAGE, PROD).')
+    parser.add_argument('--json', required=True, help='Path to the JSON file to update.')
+    parser.add_argument('--csv', required=True, help='Path to the CSV file with the update data.')
+    
+    args = parser.parse_args()
+
+    # Call the update function
+    update_json(args.env, args.json, args.csv)
+
+
+Step 4: CSV File (input.csv)
+The CSV file (input.csv) should contain key-value pairs that will be used to update the JSON file.
+Step 5: Running the Script
+Step 6: Expected Output

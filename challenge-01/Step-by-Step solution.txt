@@ -1,0 +1,18 @@
+Prerequisites:
+
+Install Python 
+#if not already installed.
+Install the required Python libraries using the following command
+pip install pandas openpyxl
+
+Running the Solution:
+
+Place the provided table_data.xlsx file in the same folder as the Python script.
+Run the Python script from the command line using
+python solution.py
+
+
+The script will read the Excel file, process the data, and output the result based on the instructions.
+
+I will now review the problem statement from the "Instructions" worksheet.
+After that, I'll work on reading and processing the data and implementing the solution.

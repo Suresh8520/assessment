@@ -1,0 +1,3 @@
+ENV,host,port,dbname,user,password
+PROD,"127.10.10.10",1234,dbname1,user1,password1
+DEV,"127.0.0.1",5467,dbname2,user2,password2
